@@ -344,6 +344,7 @@
             }
         }
     </style>
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
@@ -361,22 +362,24 @@
                 </div>
                 
                 <div id="loading-message">Buscando DNI...</div>
-                
+         
                 <div>
                     <label>Nombre del Reportero:</label>
                     <input type="text" name="nombre_reportero" id="nombre_reportero" placeholder="Se llenará automáticamente" required>
                 </div>
-                
+            
                 <div>
                     <label>Área:</label>
                     <input type="text" name="area_reportero" id="area_reportero" placeholder="Se llenará automáticamente">
                 </div>
                
+   
                 <div>
                     <label>Cargo:</label>
                     <input type="text" name="cargo_reportero" id="cargo_reportero" placeholder="Se llenará automáticamente">
                 </div>
                 
+         
                 <div>
                     <label>Empresa a la que pertenece:</label>
                     <input type="text" name="empresa" id="empresa_input" placeholder="Se llenará automáticamente">
@@ -384,31 +387,36 @@
             </fieldset>
 
             <fieldset>
+   
                 <legend>Área/Sección Reportada</legend>
                 <div>
                     <label>Fecha del Reporte:</label>
                     <input type="date" name="fecha_reporte" required>
                 </div>
-                
+         
                 <div>
                     <label>Supervisor de Turno:</label>
                     <input type="text" name="supervisor_nombre" id="supervisor_nombre_input" placeholder="Comienza a escribir el nombre del supervisor" list="supervisores_list" required>
-                    <datalist id="supervisores_list"></datalost>
+                    <datalist id="supervisores_list"></datalist>
+  
                 </div>
                 
                 <div>
                     <label>Cargo de Supervisor:</label>
                     <input type="text" name="supervisor_cargo" id="supervisor_cargo_input" placeholder="Se llenará automáticamente" required>
+     
                 </div>
                 
                 <div>
                     <label>Empresa a la que pertenece el supervisor:</label>
                     <input type="text" name="supervisor_empresa" id="supervisor_empresa_input" placeholder="Se llenará automáticamente" required>
+    
                 </div>
                 
                 <div>
                     <label>Especificar el lugar:</label>
                     <input type="text" name="ubicacion" placeholder="Escribe el lugar o área reportada" required>
+     
                 </div>
 
                 <div>
@@ -420,6 +428,7 @@
                     </select>
                 </div>
 
+          
                 <div id="codigo_div" class="hidden-field">
                     <label>Código:</label>
                     <input type="text" name="codigo" id="codigo_input" readonly>
@@ -427,25 +436,30 @@
 
     
                 <div id="acto_inseguro_div" class="hidden-field">
+          
                     <label>Acto Inseguro:</label>
                     <select name="acto_inseguro" id="acto_inseguro_select">
                         <option value="">Selecciona un acto</option>
                         <option value="A-1: Operar equipo sin autorización o entrenamiento">A-1: Operar equipo sin autorización o entrenamiento</option>
+   
                         <option value="A-2: Omisión o falla al advertir, avisar, comunicar o coordinar">A-2: Omisión o falla al advertir, avisar, comunicar o coordinar</option>
                         <option value="A-3: Omisión o falla al asegurar">A-3: Omisión o falla al asegurar</option>
                         <option value="A-4: Operar/conducir a velocidad excesiva">A-4: Operar/conducir a velocidad excesiva</option>
                         <option value="A-5: Retirar y/o eliminar sistemas, dispositivos y/o medidas de protección">A-5: Retirar y/o eliminar sistemas, dispositivos y/o medidas de protección</option>
                         <option value="A-6: Usar equipos y/o herramientas defectuosos o inadecuados">A-6: Usar equipos y/o herramientas defectuosos o inadecuados</option>
+          
                         <option value="A-7: No usar o utilizar inadecuadamente el equipo de protección personal">A-7: No usar o utilizar inadecuadamente el equipo de protección personal</option>
                         <option value="A-8: Colocación y/o almacenamiento inadecuado">A-8: Colocación y/o almacenamiento inadecuado</option>
                         <option value="A-9: Adoptar posición inadecuada para hacer una tarea">A-9: Adoptar posición inadecuada para hacer una tarea</option>
                         <option value="A-10: Manipulación inadecuada de cargas">A-10: Manipulación inadecuada de cargas</option>
                         <option value="A-11: Revisar el equipo en funcionamiento (mientras se encuentre operando)">A-11: Revisar el equipo en funcionamiento (mientras se encuentre operando)</option>
+                 
                         <option value="A-12: Comportamiento inapropiado del trabajador (bromas, jugueteos, etc.)">A-12: Comportamiento inapropiado del trabajador (bromas, jugueteos, etc.)</option>
                         <option value="A-13: Trabajar bajo la influencia de alcohol y/u otra droga">A-13: Trabajar bajo la influencia de alcohol y/u otra droga</option>
                         <option value="A-14: Uso inadecuado de equipos y herramientas">A-14: Uso inadecuado de equipos y herramientas</option>
                         <option value="A-15: No obedecer señales de seguridad y/o de tránsito">A-15: No obedecer señales de seguridad y/o de tránsito</option>
                         <option value="A-16: No cumplir con la política, estándares y procedimientos establecidos.">A-16: No cumplir con la política, estándares y procedimientos establecidos.</option>
+              
                         <option value="A-17: Manipulación inadecuada de productos químicos y/o materiales peligrosos">A-17: Manipulación inadecuada de productos químicos y/o materiales peligrosos</option>
                         <option value="A-18: Personas expuestas a riesgo de caída">A-18: Personas expuestas a riesgo de caída</option>
                         <option value="A-19: Ingreso a áreas restringidas sin autorización">A-19: Ingreso a áreas restringidas sin autorización</option>
@@ -455,6 +469,7 @@
                         <option value="A-23: Inadecuada y/o falta de evaluación del riesgo">A-23: Inadecuada y/o falta de evaluación del riesgo</option>
                         <option value="A-24: Otros">A-24: Otros</option>
                     </select>
+    
                 </div>
 
                 <div id="condicion_insegura_div" class="hidden-field">
@@ -463,29 +478,36 @@
                         <option value="">Selecciona una condición</option>
                         <option value="C-1: Falta o inadecuadas barreras, guardas, muros, barricadas, etc">C-1: Falta o inadecuadas barreras, guardas, muros, barricadas, etc</option>
                         <option value="C-2: Equipo de protección personal inadecuados o insuficientes">C-2: Equipo de protección personal inadecuados o insuficientes</option>
+                    
                         <option value="C-3: Herramientas, equipos o materiales defectuosos y/o inadecuados">C-3: Herramientas, equipos o materiales defectuosos y/o inadecuados</option>
                         <option value="C-4: Área de trabajo congestionada o restringida">C-4: Área de trabajo congestionada o restringida</option>
                         <option value="C-5: Advertencia y/o señalización insuficientes o inadecuadas">C-5: Advertencia y/o señalización insuficientes o inadecuadas</option>
+       
                         <option value="C-6: Riesgo de explosión y/o incendio">C-6: Riesgo de explosión y/o incendio</option>
                         <option value="C-7: Falta de orden y limpieza">C-7: Falta de orden y limpieza</option>
                         <option value="C-8: Presencia de: polvos/humo/gases/asfixia">C-8: Presencia de: polvos/humo/gases/asfixia</option>
+      
                         <option value="C-9: Falta de bloqueo y rotulación">C-9: Falta de bloqueo y rotulación</option>
                         <option value="C-10: Área con exposición a temperaturas extremas (bajas o altas)">C-10: Área con exposición a temperaturas extremas (bajas o altas)</option>
                         <option value="C-11: Excesiva / deficiente iluminación">C-11: Excesiva / deficiente iluminación</option>
                         <option value="C-12: Objeto o partes cortantes expuestos">C-12: Objeto o partes cortantes expuestos</option>
                         <option value="C-13: Condiciones climáticas adversas (lluvia, nieve, helada, neblina, tormentas, etc.)">C-13: Condiciones climáticas adversas (lluvia, nieve, helada, neblina, tormentas, etc.)</option>
+                 
                         <option value="C-14: Almacenamiento inadecuado de materiales o productos químicos">C-14: Almacenamiento inadecuado de materiales o productos químicos</option>
                         <option value="C-15: Paredes, tejados, etc. Inestables">C-15: Paredes, tejados, etc. Inestables</option>
                         <option value="C-16: Caminos, accesos, pisos y superficies inadecuados o sin mantenimiento">C-16: Caminos, accesos, pisos y superficies inadecuados o sin mantenimiento</option>
+  
                         <option value="C-17: Instrucciones y/o procedimientos inadecuados">C-17: Instrucciones y/o procedimientos inadecuados</option>
                         <option value="C-18: Falta / falla en comunicaciones">C-18: Falta / falla en comunicaciones</option>
                         <option value="C-19: Riesgo de derrumbe, deslizamiento.">C-19: Riesgo de derrumbe, deslizamiento.</option>
+ 
                         <option value="C-20: Falta de ventilación">C-20: Falta de ventilación</option>
                         <option value="C-21: Falta / falla de extintores, mangueras contra incendios, otros.">C-21: Falta / falla de extintores, mangueras contra incendios, otros.</option>
                         <option value="C-22: Tiros cortados">C-22: Tiros cortados</option>
                         <option value="C-23: Riesgo de caída de material / objetos">C-23: Riesgo de caída de material / objetos</option>
                         <option value="C-24: Otros">C-24: Otros</option>
                     </select>
+            
                 </div>
             
                 <div>
@@ -502,12 +524,12 @@
                     <label>Plazo:</label>
                     <textarea id="plazo-input" name="plazo_de_accion" rows="1" readonly></textarea>
                 </div>
-                
+      
                 <div>
                     <label>Contenido del Reporte:</label>
                     <textarea name="contenido_reporte" placeholder="Describe lo que se observó en el campo" rows="4" required></textarea>
                 </div>
-                
+     
                 <div>
                     <label>Foto del Reporte: 📸</label>
                     <div class="file-input-container">
@@ -529,6 +551,9 @@
     </div>
     
     <script>
+        // PASO 1: REEMPLAZA ESTA URL CON LA DE TU PROYECTO DE GOOGLE APPS SCRIPT
+        const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbylZSg8-WNE0MDoAZqJeOmxP_ZRDwq_YmqfTRJ7bGerdxoXiS6hjU4mx7x2l93JSzwlJw/exec';
+
         const form = document.getElementById('reporteForm');
         const dniInput = document.getElementById('dni_input');
         const nombreInput = document.getElementById('nombre_reportero');
@@ -539,7 +564,6 @@
         const supervisorNombreInput = document.getElementById('supervisor_nombre_input');
         const supervisorCargoInput = document.getElementById('supervisor_cargo_input');
         const supervisorEmpresaInput = document.getElementById('supervisor_empresa_input');
-        const supervisoresList = document.getElementById('supervisores_list');
         const actoCondicionSelect = document.getElementById('acto_condicion_select');
         const actoInseguroDiv = document.getElementById('acto_inseguro_div');
         const condicionInseguraDiv = document.getElementById('condicion_insegura_div');
@@ -547,12 +571,9 @@
         const condicionInseguraSelect = document.getElementById('condicion_insegura_select');
         const codigoDiv = document.getElementById('codigo_div');
         const codigoInput = document.getElementById('codigo_input');
-        
-        // ELEMENTOS NUEVOS PARA EL BOTÓN DE CÁMARA
         const cameraButton = document.getElementById('camera_button');
         const fotoInput = document.getElementById('foto_input');
         const fileNameSpan = document.getElementById('file_name');
-        
         const fotoDataInput = document.getElementById('foto_data_input');
         const imagePreview = document.getElementById('image-preview');
         const offlineMessage = document.getElementById('offline-message');
@@ -562,48 +583,18 @@
         const nivelRiesgoInput = document.getElementById('nivel_riesgo_input');
         const plazoDiv = document.getElementById('plazo-div');
         const plazoInput = document.getElementById('plazo-input');
-
-        let dniTimer;
         const STORAGE_KEY = 'pendingReports';
-        
         function setReporterFieldsReadonly(isReadonly) {
             nombreInput.readOnly = isReadonly;
             areaInput.readOnly = isReadonly;
             cargoInput.readOnly = isReadonly;
             empresaInput.readOnly = isReadonly;
         }
-        
+
         function setSupervisorFieldsReadonly(isReadonly) {
             supervisorCargoInput.readOnly = isReadonly;
             supervisorEmpresaInput.readOnly = isReadonly;
         }
-
-        function handleConnectionStatus() {
-            if (navigator.onLine) {
-                offlineMessage.style.display = 'none';
-                setReporterFieldsReadonly(true);
-                setSupervisorFieldsReadonly(true);
-                supervisorNombreInput.setAttribute('list', 'supervisores_list');
-                google.script.run
-                    .withSuccessHandler(function(supervisores) {
-                        supervisoresList.innerHTML = '';
-                        supervisores.forEach(supervisor => {
-                            const option = document.createElement('option');
-                            option.value = supervisor;
-                            supervisoresList.appendChild(option);
-                        });
-                    })
-                    .obtenerSupervisores();
-                syncReports();
-            } else {
-                offlineMessage.style.display = 'block';
-                setReporterFieldsReadonly(false);
-                setSupervisorFieldsReadonly(false);
-                supervisorNombreInput.removeAttribute('list');
-                supervisoresList.innerHTML = '';
-            }
-        }
-        
         function getPendingReports() {
             return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
         }
@@ -612,6 +603,7 @@
             const reports = getPendingReports();
             reports.push(reporte);
             localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+            console.log('Reporte guardado localmente:', reporte);
         }
 
         function removeFirstPendingReport() {
@@ -620,50 +612,89 @@
             localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
         }
 
-        function syncReports() {
+        async function sendReportToServer(reporte) {
+            try {
+                const response = await fetch(WEB_APP_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(reporte),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                const result = await response.json();
+                if (result.success) {
+                    console.log('Reporte enviado con éxito:', result);
+                    return true;
+                } else {
+                    console.error('Error del servidor:', result.error);
+                    return false;
+                }
+            } catch (error) {
+                console.error('Error de red al enviar el reporte:', error);
+                return false;
+            }
+        }
+
+        async function sincronizarPendientes() {
             const reports = getPendingReports();
             if (reports.length > 0) {
                 syncMessage.textContent = `Sincronizando ${reports.length} reporte(s) pendiente(s)...`;
                 syncMessage.style.display = 'block';
 
-                const firstReport = reports[0];
-                
-                const uploadAndSave = (reporte) => {
-                    if (reporte.foto_data) {
-                        google.script.run
-                            .withSuccessHandler(function(fileUrl) {
-                                reporte.foto_url = fileUrl;
-                                delete reporte.foto_data;
-                                saveReportToSheet(reporte);
-                            })
-                            .withFailureHandler(function(error) {
-                                console.error('Error al subir la foto durante la sincronización:', error);
-                                removeFirstPendingReport();
-                                syncReports();
-                            })
-                            .uploadPhotoToDrive(reporte.foto_data, `reporte_${Date.now()}.jpg`);
+                for (const report of reports) {
+                    const success = await sendReportToServer(report);
+                    if (success) {
+                        removeFirstPendingReport();
                     } else {
-                        saveReportToSheet(reporte);
+                        // Si falla una sincronización, detenemos el proceso y reintentamos más tarde
+                        syncMessage.textContent = '❌ Error de sincronización. Reintentando en 1 minuto.';
+                        setTimeout(sincronizarPendientes, 60000);
+                        return;
                     }
-                };
-                
-                const saveReportToSheet = (reporte) => {
-                    google.script.run
-                        .withSuccessHandler(function(response) {
-                            console.log('Reporte sincronizado con éxito:', response);
-                            removeFirstPendingReport();
-                            syncReports();
-                        })
-                        .withFailureHandler(function(error) {
-                            console.error('Error al sincronizar el reporte:', error);
-                            syncMessage.textContent = '❌ Error de sincronización. Reintentando en 1 minuto.';
-                            setTimeout(syncReports, 60000);
-                        })
-                        .guardarReporte(reporte);
-                };
+                }
+                syncMessage.style.display = 'none';
+            }
+        }
 
-                uploadAndSave(firstReport);
+        async function buscarDNI(dni) {
+            try {
+                const response = await fetch(WEB_APP_URL + '?dni=' + dni);
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error('Error al buscar DNI:', error);
+                return null;
+            }
+        }
+
+        async function buscarSupervisor(nombre) {
+            try {
+                const response = await fetch(WEB_APP_URL + '?supervisor=' + encodeURIComponent(nombre));
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error('Error al buscar supervisor:', error);
+                return null;
+            }
+        }
+
+        async function obtenerSupervisores() {
+            try {
+                const response = await fetch(WEB_APP_URL + '?action=getSupervisors');
+                const data = await response.json();
+                return data.data;
+            } catch (error) {
+                console.error('Error al obtener supervisores:', error);
+                return [];
+            }
+        }
+
+        function handleConnectionStatus() {
+            if (navigator.onLine) {
+                offlineMessage.style.display = 'none';
+                sincronizarPendientes();
             } else {
+                offlineMessage.style.display = 'block';
                 syncMessage.style.display = 'none';
             }
         }
@@ -675,65 +706,61 @@
             return '';
         }
 
-        window.addEventListener('load', () => {
+        window.addEventListener('load', async () => {
             handleConnectionStatus();
+            if (navigator.onLine) {
+                const supervisores = await obtenerSupervisores();
+                const datalist = document.getElementById('supervisores_list');
+                datalist.innerHTML = '';
+                supervisores.forEach(supervisor => {
+                    const option = document.createElement('option');
+                    option.value = supervisor;
+                    datalist.appendChild(option);
+                });
+            }
         });
 
-        supervisorNombreInput.addEventListener('input', () => {
-            if (!navigator.onLine) {
+        supervisorNombreInput.addEventListener('input', async () => {
+            if (!navigator.onLine || supervisorNombreInput.value.length < 3) {
                 supervisorCargoInput.value = '';
                 supervisorEmpresaInput.value = '';
+                setSupervisorFieldsReadonly(false);
                 return;
             }
             const nombre = supervisorNombreInput.value;
-            google.script.run
-                .withSuccessHandler(function(data) {
-                    if (data && data.cargo) {
-                        supervisorCargoInput.value = data.cargo;
-                        supervisorEmpresaInput.value = data.empresa;
-                    } else {
-                        supervisorCargoInput.value = '';
-                        supervisorEmpresaInput.value = '';
-                    }
-                })
-                .buscarSupervisor(nombre);
+            const data = await buscarSupervisor(nombre);
+            if (data && data.cargo) {
+                supervisorCargoInput.value = data.cargo;
+                supervisorEmpresaInput.value = data.empresa;
+                setSupervisorFieldsReadonly(true);
+            } else {
+                supervisorCargoInput.value = '';
+                supervisorEmpresaInput.value = '';
+                setSupervisorFieldsReadonly(false);
+            }
         });
 
-        dniInput.addEventListener('input', () => {
-            clearTimeout(dniTimer);
-            loadingMessage.style.display = 'none';
-            
+        dniInput.addEventListener('input', async () => {
             const dni = dniInput.value;
             if (dni.length === 8) {
                 if (navigator.onLine) {
                     loadingMessage.style.display = 'block';
-                    dniTimer = setTimeout(() => {
-                        google.script.run
-                            .withSuccessHandler(function(dataEncontrada) {
-                                loadingMessage.style.display = 'none';
-                                if (dataEncontrada) {
-                                    nombreInput.value = dataEncontrada.nombre;
-                                    areaInput.value = dataEncontrada.area;
-                                    cargoInput.value = dataEncontrada.cargo;
-                                    empresaInput.value = dataEncontrada.empresa;
-                                    setReporterFieldsReadonly(true);
-                                } else {
-                                    alert("DNI no encontrado. Por favor, ingresa tus datos manualmente.");
-                                    nombreInput.value = '';
-                                    areaInput.value = '';
-                                    cargoInput.value = '';
-                                    empresaInput.value = '';
-                                    setReporterFieldsReadonly(false);
-                                }
-                            })
-                            .withFailureHandler(function(error) {
-                                loadingMessage.style.display = 'none';
-                                console.error('Error al ejecutar el script:', error.message);
-                                alert('Hubo un error al buscar el DNI. Rellena los datos manualmente.');
-                                setReporterFieldsReadonly(false);
-                            })
-                            .buscarDNI(dni);
-                    }, 500);
+                    const data = await buscarDNI(dni);
+                    loadingMessage.style.display = 'none';
+                    if (data) {
+                        nombreInput.value = data.nombre;
+                        areaInput.value = data.area;
+                        cargoInput.value = data.cargo;
+                        empresaInput.value = data.empresa;
+                        setReporterFieldsReadonly(true);
+                    } else {
+                        alert("DNI no encontrado. Por favor, ingresa tus datos manualmente.");
+                        nombreInput.value = '';
+                        areaInput.value = '';
+                        cargoInput.value = '';
+                        empresaInput.value = '';
+                        setReporterFieldsReadonly(false);
+                    }
                 } else {
                     alert("🔴 Estás sin conexión. Por favor, rellena tus datos manualmente.");
                     setReporterFieldsReadonly(false);
@@ -743,7 +770,6 @@
             }
         });
 
-        // NUEVO: Manejar el clic en el botón de cámara
         cameraButton.addEventListener('click', () => {
             fotoInput.click();
         });
@@ -751,7 +777,7 @@
         fotoInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
-                fileNameSpan.textContent = file.name; // Mostrar el nombre del archivo
+                fileNameSpan.textContent = file.name;
                 const reader = new FileReader();
                 reader.onloadend = function() {
                     const base64data = reader.result;
@@ -773,10 +799,9 @@
             condicionInseguraDiv.style.display = 'none';
             codigoDiv.style.display = 'none';
             codigoInput.value = '';
-            
             actoInseguroSelect.removeAttribute('required');
             condicionInseguraSelect.removeAttribute('required');
-            
+
             if (selectedValue === 'Acto Subestandar') {
                 actoInseguroDiv.style.display = 'block';
                 actoInseguroSelect.setAttribute('required', 'required');
@@ -815,7 +840,6 @@
                 riesgoOptions.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
                 nivelRiesgoInput.value = option.dataset.value;
-                
                 plazoDiv.style.display = 'block';
                 if (option.dataset.value === 'Alto') {
                     plazoInput.value = '0-24 HORAS';
@@ -827,9 +851,9 @@
             });
         });
 
-        form.addEventListener('submit', (e) => {
+        form.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
+
             const data = {};
             const elements = e.target.elements;
             for (let i = 0; i < elements.length; i++) {
@@ -844,66 +868,17 @@
             submitButton.disabled = true;
 
             if (navigator.onLine) {
-                if (data.foto_data) {
-                    google.script.run
-                        .withSuccessHandler(function(fileUrl) {
-                            data.foto_url = fileUrl;
-                            delete data.foto_data;
-                            google.script.run
-                                .withSuccessHandler(function(response) {
-                                    if (response === 'Reporte guardado con éxito.') {
-                                        document.getElementById('success-message').style.display = 'block';
-                                        form.reset();
-                                        imagePreview.style.display = 'none';
-                                        fotoDataInput.value = '';
-                                        fileNameSpan.textContent = 'No se ha seleccionado archivo.';
-                                        setReporterFieldsReadonly(true);
-                                        setSupervisorFieldsReadonly(true);
-                                    } else {
-                                        document.getElementById('fail-message').style.display = 'block';
-                                    }
-                                    submitButton.value = 'Enviar Reporte';
-                                    submitButton.disabled = false;
-                                })
-                                .withFailureHandler(function(error) {
-                                    console.error('Error al enviar el reporte:', error.message);
-                                    document.getElementById('fail-message').style.display = 'block';
-                                    submitButton.value = 'Enviar Reporte';
-                                    submitButton.disabled = false;
-                                })
-                                .guardarReporte(data);
-                        })
-                        .withFailureHandler(function(error) {
-                            console.error('Error al subir la foto en línea:', error.message);
-                            document.getElementById('fail-message').style.display = 'block';
-                            submitButton.value = 'Enviar Reporte';
-                            submitButton.disabled = false;
-                        })
-                        .uploadPhotoToDrive(data.foto_data, `reporte_${Date.now()}.jpg`);
+                const success = await sendReportToServer(data);
+                if (success) {
+                    document.getElementById('success-message').style.display = 'block';
+                    form.reset();
+                    imagePreview.style.display = 'none';
+                    fotoDataInput.value = '';
+                    fileNameSpan.textContent = 'No se ha seleccionado archivo.';
+                    setReporterFieldsReadonly(true);
+                    setSupervisorFieldsReadonly(true);
                 } else {
-                    google.script.run
-                        .withSuccessHandler(function(response) {
-                            if (response === 'Reporte guardado con éxito.') {
-                                document.getElementById('success-message').style.display = 'block';
-                                form.reset();
-                                imagePreview.style.display = 'none';
-                                fotoDataInput.value = '';
-                                fileNameSpan.textContent = 'No se ha seleccionado archivo.';
-                                setReporterFieldsReadonly(true);
-                                setSupervisorFieldsReadonly(true);
-                            } else {
-                                document.getElementById('fail-message').style.display = 'block';
-                            }
-                            submitButton.value = 'Enviar Reporte';
-                            submitButton.disabled = false;
-                        })
-                        .withFailureHandler(function(error) {
-                            console.error('Error al enviar el reporte:', error.message);
-                            document.getElementById('fail-message').style.display = 'block';
-                            submitButton.value = 'Enviar Reporte';
-                            submitButton.disabled = false;
-                        })
-                        .guardarReporte(data);
+                    document.getElementById('fail-message').style.display = 'block';
                 }
             } else {
                 saveReportOffline(data);
@@ -915,14 +890,26 @@
                 fileNameSpan.textContent = 'No se ha seleccionado archivo.';
                 setReporterFieldsReadonly(false);
                 setSupervisorFieldsReadonly(false);
-                submitButton.value = 'Enviar Reporte';
-                submitButton.disabled = false;
             }
+
+            submitButton.value = 'Enviar Reporte';
+            submitButton.disabled = false;
         });
-        
+
         window.addEventListener('online', handleConnectionStatus);
         window.addEventListener('offline', handleConnectionStatus);
 
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(registration => {
+                        console.log('Service Worker registrado con éxito:', registration);
+                    })
+                    .catch(err => {
+                        console.log('Fallo el registro del Service Worker:', err);
+                    });
+            });
+        }
     </script>
 </body>
 </html>
