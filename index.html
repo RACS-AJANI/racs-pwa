@@ -1,0 +1,928 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <title>REPORTE DE ACTO Y CONDICIÓN SUB ESTANDAR</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Arial+Narrow:wght@400;700&display=swap');
+        
+        /* Regla de box-sizing para todos los elementos, asegura que el padding y el border se incluyan en el ancho y alto del elemento */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            background-color: #e9f0f8;
+            margin: 0;
+            padding: 10px; /* Reducir el padding en el cuerpo para pantallas pequeñas */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .form-container {
+            background-color: #FFD700;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 650px;
+            position: relative;
+        }
+
+        .form-container::before {
+            content: "AJANI";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 180px;
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: bold;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #333;
+            font-size: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #a0a0a0;
+            border-radius: 8px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            z-index: 1;
+            font-size: 16px;
+            font-family: 'Arial Narrow', Arial, sans-serif;
+            color: #333;
+        }
+        
+        input[type="text"][readonly],
+        input[type="date"][readonly],
+        select[readonly],
+        textarea[readonly] {
+            background-color: #e9ecef;
+            cursor: not-allowed;
+        }
+        
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: #0056b3;
+            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
+            outline: none;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        input[type="submit"] {
+            background-color: #0056b3;
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            position: relative;
+            z-index: 1;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #004085;
+            transform: translateY(-2px);
+        }
+        
+        input[type="submit"]:active {
+            transform: translateY(0);
+        }
+
+        #loading-message, #success-message, #fail-message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 8px;
+            position: relative;
+            z-index: 1;
+            font-size: 16px;
+        }
+
+        #loading-message { 
+            color: #0056b3;
+            background-color: #e6f7ff;
+            display: none;
+        }
+
+        #success-message { 
+            color: #27ae60;
+            background-color: #e8f9ee; 
+            display: none;
+        }
+        
+        #fail-message { 
+            color: #e74c3c;
+            background-color: #fcebeb; 
+            display: none;
+        }
+        
+        .hidden-field {
+            display: none;
+        }
+        
+        #image-preview {
+            max-width: 100%;
+            height: auto;
+            margin-top: 15px;
+            border: 2px dashed #a0a0a0;
+            padding: 10px;
+            border-radius: 8px;
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        #offline-message {
+            background-color: #e67e22;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+        
+        #sync-message {
+            background-color: #0056b3;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 8px;
+            display: none;
+            font-weight: bold;
+        }
+        
+        /* Estilos para los botones de riesgo */
+        .riesgo-container {
+            display: flex;
+            justify-content: space-around;
+            gap: 10px;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .riesgo-option {
+            flex-grow: 1;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: white;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            border: 2px solid transparent;
+            position: relative;
+            font-size: 16px;
+        }
+
+        .riesgo-option:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        
+        .riesgo-option.selected {
+            border: 2px solid #333;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .riesgo-option::before {
+            content: "⚪";
+            position: absolute;
+            left: 10px;
+            font-size: 1.2em;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+        
+        .riesgo-option.selected::before {
+            content: "⚫";
+        }
+        
+        .riesgo-alto {
+            background-color: #e74c3c;
+        }
+        
+        .riesgo-medio {
+            background-color: #f1c40f;
+        }
+        
+        .riesgo-bajo {
+            background-color: #2ecc71;
+        }
+
+        /* Estilos para el nuevo fieldset */
+        fieldset {
+            border: 2px solid #a0a0a0;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        legend {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #333;
+            padding: 0 10px;
+        }
+        
+        /* Estilos para el botón de cámara */
+        .file-input-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap; /* Permite que los elementos se apilen si no caben */
+        }
+
+        .hidden-input {
+            display: none;
+        }
+
+        .custom-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .custom-button:hover {
+            background-color: #45a049;
+        }
+
+        .file-name {
+            font-size: 14px;
+            color: #555;
+            flex-grow: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        
+        /* Reglas de estilo para hacer el formulario responsivo en dispositivos móviles */
+        @media (max-width: 768px) {
+            .form-container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+            
+            label {
+                font-size: 14px;
+            }
+            
+            input[type="text"],
+            input[type="date"],
+            select,
+            textarea {
+                font-size: 14px;
+                padding: 8px;
+            }
+
+            .riesgo-container {
+                flex-direction: column; /* Apilar los botones de riesgo en pantallas pequeñas */
+            }
+
+            .riesgo-option {
+                margin-bottom: 10px; /* Espacio entre los botones apilados */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-container">
+        <div id="offline-message">🔴 Estás sin conexión. Por favor, rellena los campos manualmente.</div>
+        <div id="sync-message">🔄 Sincronizando reportes pendientes...</div>
+        <h1>REPORTE DE ACTO Y CONDICION SUB ESTANDAR</h1>
+        
+        <form id="reporteForm">
+            <fieldset>
+                <legend>Persona Reportante</legend>
+                <div>
+                    <label>DNI:</label>
+                    <input type="text" name="dni" id="dni_input" maxlength="8" placeholder="Ingresa tu DNI" required>
+                </div>
+                
+                <div id="loading-message">Buscando DNI...</div>
+                
+                <div>
+                    <label>Nombre del Reportero:</label>
+                    <input type="text" name="nombre_reportero" id="nombre_reportero" placeholder="Se llenará automáticamente" required>
+                </div>
+                
+                <div>
+                    <label>Área:</label>
+                    <input type="text" name="area_reportero" id="area_reportero" placeholder="Se llenará automáticamente">
+                </div>
+               
+                <div>
+                    <label>Cargo:</label>
+                    <input type="text" name="cargo_reportero" id="cargo_reportero" placeholder="Se llenará automáticamente">
+                </div>
+                
+                <div>
+                    <label>Empresa a la que pertenece:</label>
+                    <input type="text" name="empresa" id="empresa_input" placeholder="Se llenará automáticamente">
+                </div>
+            </fieldset>
+
+            <fieldset>
+                <legend>Área/Sección Reportada</legend>
+                <div>
+                    <label>Fecha del Reporte:</label>
+                    <input type="date" name="fecha_reporte" required>
+                </div>
+                
+                <div>
+                    <label>Supervisor de Turno:</label>
+                    <input type="text" name="supervisor_nombre" id="supervisor_nombre_input" placeholder="Comienza a escribir el nombre del supervisor" list="supervisores_list" required>
+                    <datalist id="supervisores_list"></datalost>
+                </div>
+                
+                <div>
+                    <label>Cargo de Supervisor:</label>
+                    <input type="text" name="supervisor_cargo" id="supervisor_cargo_input" placeholder="Se llenará automáticamente" required>
+                </div>
+                
+                <div>
+                    <label>Empresa a la que pertenece el supervisor:</label>
+                    <input type="text" name="supervisor_empresa" id="supervisor_empresa_input" placeholder="Se llenará automáticamente" required>
+                </div>
+                
+                <div>
+                    <label>Especificar el lugar:</label>
+                    <input type="text" name="ubicacion" placeholder="Escribe el lugar o área reportada" required>
+                </div>
+
+                <div>
+                    <label>Acto / Condición Subestándar:</label>
+                    <select name="acto_condicion" id="acto_condicion_select" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="Acto Subestandar">Acto Subestándar</option>
+                        <option value="Condicion Subestandar">Condición Subestándar</option>
+                    </select>
+                </div>
+
+                <div id="codigo_div" class="hidden-field">
+                    <label>Código:</label>
+                    <input type="text" name="codigo" id="codigo_input" readonly>
+                </div>
+
+    
+                <div id="acto_inseguro_div" class="hidden-field">
+                    <label>Acto Inseguro:</label>
+                    <select name="acto_inseguro" id="acto_inseguro_select">
+                        <option value="">Selecciona un acto</option>
+                        <option value="A-1: Operar equipo sin autorización o entrenamiento">A-1: Operar equipo sin autorización o entrenamiento</option>
+                        <option value="A-2: Omisión o falla al advertir, avisar, comunicar o coordinar">A-2: Omisión o falla al advertir, avisar, comunicar o coordinar</option>
+                        <option value="A-3: Omisión o falla al asegurar">A-3: Omisión o falla al asegurar</option>
+                        <option value="A-4: Operar/conducir a velocidad excesiva">A-4: Operar/conducir a velocidad excesiva</option>
+                        <option value="A-5: Retirar y/o eliminar sistemas, dispositivos y/o medidas de protección">A-5: Retirar y/o eliminar sistemas, dispositivos y/o medidas de protección</option>
+                        <option value="A-6: Usar equipos y/o herramientas defectuosos o inadecuados">A-6: Usar equipos y/o herramientas defectuosos o inadecuados</option>
+                        <option value="A-7: No usar o utilizar inadecuadamente el equipo de protección personal">A-7: No usar o utilizar inadecuadamente el equipo de protección personal</option>
+                        <option value="A-8: Colocación y/o almacenamiento inadecuado">A-8: Colocación y/o almacenamiento inadecuado</option>
+                        <option value="A-9: Adoptar posición inadecuada para hacer una tarea">A-9: Adoptar posición inadecuada para hacer una tarea</option>
+                        <option value="A-10: Manipulación inadecuada de cargas">A-10: Manipulación inadecuada de cargas</option>
+                        <option value="A-11: Revisar el equipo en funcionamiento (mientras se encuentre operando)">A-11: Revisar el equipo en funcionamiento (mientras se encuentre operando)</option>
+                        <option value="A-12: Comportamiento inapropiado del trabajador (bromas, jugueteos, etc.)">A-12: Comportamiento inapropiado del trabajador (bromas, jugueteos, etc.)</option>
+                        <option value="A-13: Trabajar bajo la influencia de alcohol y/u otra droga">A-13: Trabajar bajo la influencia de alcohol y/u otra droga</option>
+                        <option value="A-14: Uso inadecuado de equipos y herramientas">A-14: Uso inadecuado de equipos y herramientas</option>
+                        <option value="A-15: No obedecer señales de seguridad y/o de tránsito">A-15: No obedecer señales de seguridad y/o de tránsito</option>
+                        <option value="A-16: No cumplir con la política, estándares y procedimientos establecidos.">A-16: No cumplir con la política, estándares y procedimientos establecidos.</option>
+                        <option value="A-17: Manipulación inadecuada de productos químicos y/o materiales peligrosos">A-17: Manipulación inadecuada de productos químicos y/o materiales peligrosos</option>
+                        <option value="A-18: Personas expuestas a riesgo de caída">A-18: Personas expuestas a riesgo de caída</option>
+                        <option value="A-19: Ingreso a áreas restringidas sin autorización">A-19: Ingreso a áreas restringidas sin autorización</option>
+                        <option value="A-20: Distracciones">A-20: Distracciones</option>
+                        <option value="A-21: Trabajar en área con falta de orden y limpieza">A-21: Trabajar en área con falta de orden y limpieza</option>
+                        <option value="A-22: No señalizar o restringir un área adecuadamente">A-22: No señalizar o restringir un área adecuadamente</option>
+                        <option value="A-23: Inadecuada y/o falta de evaluación del riesgo">A-23: Inadecuada y/o falta de evaluación del riesgo</option>
+                        <option value="A-24: Otros">A-24: Otros</option>
+                    </select>
+                </div>
+
+                <div id="condicion_insegura_div" class="hidden-field">
+                    <label>Condición Insegura:</label>
+                    <select name="condicion_insegura" id="condicion_insegura_select">
+                        <option value="">Selecciona una condición</option>
+                        <option value="C-1: Falta o inadecuadas barreras, guardas, muros, barricadas, etc">C-1: Falta o inadecuadas barreras, guardas, muros, barricadas, etc</option>
+                        <option value="C-2: Equipo de protección personal inadecuados o insuficientes">C-2: Equipo de protección personal inadecuados o insuficientes</option>
+                        <option value="C-3: Herramientas, equipos o materiales defectuosos y/o inadecuados">C-3: Herramientas, equipos o materiales defectuosos y/o inadecuados</option>
+                        <option value="C-4: Área de trabajo congestionada o restringida">C-4: Área de trabajo congestionada o restringida</option>
+                        <option value="C-5: Advertencia y/o señalización insuficientes o inadecuadas">C-5: Advertencia y/o señalización insuficientes o inadecuadas</option>
+                        <option value="C-6: Riesgo de explosión y/o incendio">C-6: Riesgo de explosión y/o incendio</option>
+                        <option value="C-7: Falta de orden y limpieza">C-7: Falta de orden y limpieza</option>
+                        <option value="C-8: Presencia de: polvos/humo/gases/asfixia">C-8: Presencia de: polvos/humo/gases/asfixia</option>
+                        <option value="C-9: Falta de bloqueo y rotulación">C-9: Falta de bloqueo y rotulación</option>
+                        <option value="C-10: Área con exposición a temperaturas extremas (bajas o altas)">C-10: Área con exposición a temperaturas extremas (bajas o altas)</option>
+                        <option value="C-11: Excesiva / deficiente iluminación">C-11: Excesiva / deficiente iluminación</option>
+                        <option value="C-12: Objeto o partes cortantes expuestos">C-12: Objeto o partes cortantes expuestos</option>
+                        <option value="C-13: Condiciones climáticas adversas (lluvia, nieve, helada, neblina, tormentas, etc.)">C-13: Condiciones climáticas adversas (lluvia, nieve, helada, neblina, tormentas, etc.)</option>
+                        <option value="C-14: Almacenamiento inadecuado de materiales o productos químicos">C-14: Almacenamiento inadecuado de materiales o productos químicos</option>
+                        <option value="C-15: Paredes, tejados, etc. Inestables">C-15: Paredes, tejados, etc. Inestables</option>
+                        <option value="C-16: Caminos, accesos, pisos y superficies inadecuados o sin mantenimiento">C-16: Caminos, accesos, pisos y superficies inadecuados o sin mantenimiento</option>
+                        <option value="C-17: Instrucciones y/o procedimientos inadecuados">C-17: Instrucciones y/o procedimientos inadecuados</option>
+                        <option value="C-18: Falta / falla en comunicaciones">C-18: Falta / falla en comunicaciones</option>
+                        <option value="C-19: Riesgo de derrumbe, deslizamiento.">C-19: Riesgo de derrumbe, deslizamiento.</option>
+                        <option value="C-20: Falta de ventilación">C-20: Falta de ventilación</option>
+                        <option value="C-21: Falta / falla de extintores, mangueras contra incendios, otros.">C-21: Falta / falla de extintores, mangueras contra incendios, otros.</option>
+                        <option value="C-22: Tiros cortados">C-22: Tiros cortados</option>
+                        <option value="C-23: Riesgo de caída de material / objetos">C-23: Riesgo de caída de material / objetos</option>
+                        <option value="C-24: Otros">C-24: Otros</option>
+                    </select>
+                </div>
+            
+                <div>
+                    <label>Nivel de Riesgo:</label>
+                    <div class="riesgo-container">
+                        <div class="riesgo-option riesgo-alto" data-value="Alto">Alto</div>
+                        <div class="riesgo-option riesgo-medio" data-value="Medio">Medio</div>
+                        <div class="riesgo-option riesgo-bajo" data-value="Bajo">Bajo</div>
+                    </div>
+                    <input type="hidden" name="nivel_riesgo" id="nivel_riesgo_input" required>
+                </div>
+
+                <div id="plazo-div" class="hidden-field">
+                    <label>Plazo:</label>
+                    <textarea id="plazo-input" name="plazo_de_accion" rows="1" readonly></textarea>
+                </div>
+                
+                <div>
+                    <label>Contenido del Reporte:</label>
+                    <textarea name="contenido_reporte" placeholder="Describe lo que se observó en el campo" rows="4" required></textarea>
+                </div>
+                
+                <div>
+                    <label>Foto del Reporte: 📸</label>
+                    <div class="file-input-container">
+                        <input type="file" id="foto_input" accept="image/*" capture="camera" class="hidden-input">
+                        <button type="button" id="camera_button" class="custom-button">CÁMARA 📸</button>
+                        <span id="file_name" class="file-name">No se ha seleccionado archivo.</span>
+                    </div>
+                    <img id="image-preview" src="" alt="Previsualización de la imagen">
+                </div>
+            </fieldset>
+ 
+            <input type="hidden" name="foto_data" id="foto_data_input">
+            <input type="submit" value="Enviar Reporte">
+
+        </form>
+
+        <div id="success-message">✅ ¡Se envió con éxito el RACS!</div>
+        <div id="fail-message">❌ Hubo un error al enviar el reporte. Por favor, inténtalo de nuevo.</div>
+    </div>
+    
+    <script>
+        const form = document.getElementById('reporteForm');
+        const dniInput = document.getElementById('dni_input');
+        const nombreInput = document.getElementById('nombre_reportero');
+        const areaInput = document.getElementById('area_reportero');
+        const cargoInput = document.getElementById('cargo_reportero');
+        const empresaInput = document.getElementById('empresa_input');
+        const loadingMessage = document.getElementById('loading-message');
+        const supervisorNombreInput = document.getElementById('supervisor_nombre_input');
+        const supervisorCargoInput = document.getElementById('supervisor_cargo_input');
+        const supervisorEmpresaInput = document.getElementById('supervisor_empresa_input');
+        const supervisoresList = document.getElementById('supervisores_list');
+        const actoCondicionSelect = document.getElementById('acto_condicion_select');
+        const actoInseguroDiv = document.getElementById('acto_inseguro_div');
+        const condicionInseguraDiv = document.getElementById('condicion_insegura_div');
+        const actoInseguroSelect = document.getElementById('acto_inseguro_select');
+        const condicionInseguraSelect = document.getElementById('condicion_insegura_select');
+        const codigoDiv = document.getElementById('codigo_div');
+        const codigoInput = document.getElementById('codigo_input');
+        
+        // ELEMENTOS NUEVOS PARA EL BOTÓN DE CÁMARA
+        const cameraButton = document.getElementById('camera_button');
+        const fotoInput = document.getElementById('foto_input');
+        const fileNameSpan = document.getElementById('file_name');
+        
+        const fotoDataInput = document.getElementById('foto_data_input');
+        const imagePreview = document.getElementById('image-preview');
+        const offlineMessage = document.getElementById('offline-message');
+        const syncMessage = document.getElementById('sync-message');
+        const submitButton = document.querySelector('input[type="submit"]');
+        const riesgoOptions = document.querySelectorAll('.riesgo-option');
+        const nivelRiesgoInput = document.getElementById('nivel_riesgo_input');
+        const plazoDiv = document.getElementById('plazo-div');
+        const plazoInput = document.getElementById('plazo-input');
+
+        let dniTimer;
+        const STORAGE_KEY = 'pendingReports';
+        
+        function setReporterFieldsReadonly(isReadonly) {
+            nombreInput.readOnly = isReadonly;
+            areaInput.readOnly = isReadonly;
+            cargoInput.readOnly = isReadonly;
+            empresaInput.readOnly = isReadonly;
+        }
+        
+        function setSupervisorFieldsReadonly(isReadonly) {
+            supervisorCargoInput.readOnly = isReadonly;
+            supervisorEmpresaInput.readOnly = isReadonly;
+        }
+
+        function handleConnectionStatus() {
+            if (navigator.onLine) {
+                offlineMessage.style.display = 'none';
+                setReporterFieldsReadonly(true);
+                setSupervisorFieldsReadonly(true);
+                supervisorNombreInput.setAttribute('list', 'supervisores_list');
+                google.script.run
+                    .withSuccessHandler(function(supervisores) {
+                        supervisoresList.innerHTML = '';
+                        supervisores.forEach(supervisor => {
+                            const option = document.createElement('option');
+                            option.value = supervisor;
+                            supervisoresList.appendChild(option);
+                        });
+                    })
+                    .obtenerSupervisores();
+                syncReports();
+            } else {
+                offlineMessage.style.display = 'block';
+                setReporterFieldsReadonly(false);
+                setSupervisorFieldsReadonly(false);
+                supervisorNombreInput.removeAttribute('list');
+                supervisoresList.innerHTML = '';
+            }
+        }
+        
+        function getPendingReports() {
+            return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+        }
+
+        function saveReportOffline(reporte) {
+            const reports = getPendingReports();
+            reports.push(reporte);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+        }
+
+        function removeFirstPendingReport() {
+            const reports = getPendingReports();
+            reports.shift();
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+        }
+
+        function syncReports() {
+            const reports = getPendingReports();
+            if (reports.length > 0) {
+                syncMessage.textContent = `Sincronizando ${reports.length} reporte(s) pendiente(s)...`;
+                syncMessage.style.display = 'block';
+
+                const firstReport = reports[0];
+                
+                const uploadAndSave = (reporte) => {
+                    if (reporte.foto_data) {
+                        google.script.run
+                            .withSuccessHandler(function(fileUrl) {
+                                reporte.foto_url = fileUrl;
+                                delete reporte.foto_data;
+                                saveReportToSheet(reporte);
+                            })
+                            .withFailureHandler(function(error) {
+                                console.error('Error al subir la foto durante la sincronización:', error);
+                                removeFirstPendingReport();
+                                syncReports();
+                            })
+                            .uploadPhotoToDrive(reporte.foto_data, `reporte_${Date.now()}.jpg`);
+                    } else {
+                        saveReportToSheet(reporte);
+                    }
+                };
+                
+                const saveReportToSheet = (reporte) => {
+                    google.script.run
+                        .withSuccessHandler(function(response) {
+                            console.log('Reporte sincronizado con éxito:', response);
+                            removeFirstPendingReport();
+                            syncReports();
+                        })
+                        .withFailureHandler(function(error) {
+                            console.error('Error al sincronizar el reporte:', error);
+                            syncMessage.textContent = '❌ Error de sincronización. Reintentando en 1 minuto.';
+                            setTimeout(syncReports, 60000);
+                        })
+                        .guardarReporte(reporte);
+                };
+
+                uploadAndSave(firstReport);
+            } else {
+                syncMessage.style.display = 'none';
+            }
+        }
+
+        function extraerCodigo(valor) {
+            if (valor && valor.includes(':')) {
+                return valor.split(':')[0].trim();
+            }
+            return '';
+        }
+
+        window.addEventListener('load', () => {
+            handleConnectionStatus();
+        });
+
+        supervisorNombreInput.addEventListener('input', () => {
+            if (!navigator.onLine) {
+                supervisorCargoInput.value = '';
+                supervisorEmpresaInput.value = '';
+                return;
+            }
+            const nombre = supervisorNombreInput.value;
+            google.script.run
+                .withSuccessHandler(function(data) {
+                    if (data && data.cargo) {
+                        supervisorCargoInput.value = data.cargo;
+                        supervisorEmpresaInput.value = data.empresa;
+                    } else {
+                        supervisorCargoInput.value = '';
+                        supervisorEmpresaInput.value = '';
+                    }
+                })
+                .buscarSupervisor(nombre);
+        });
+
+        dniInput.addEventListener('input', () => {
+            clearTimeout(dniTimer);
+            loadingMessage.style.display = 'none';
+            
+            const dni = dniInput.value;
+            if (dni.length === 8) {
+                if (navigator.onLine) {
+                    loadingMessage.style.display = 'block';
+                    dniTimer = setTimeout(() => {
+                        google.script.run
+                            .withSuccessHandler(function(dataEncontrada) {
+                                loadingMessage.style.display = 'none';
+                                if (dataEncontrada) {
+                                    nombreInput.value = dataEncontrada.nombre;
+                                    areaInput.value = dataEncontrada.area;
+                                    cargoInput.value = dataEncontrada.cargo;
+                                    empresaInput.value = dataEncontrada.empresa;
+                                    setReporterFieldsReadonly(true);
+                                } else {
+                                    alert("DNI no encontrado. Por favor, ingresa tus datos manualmente.");
+                                    nombreInput.value = '';
+                                    areaInput.value = '';
+                                    cargoInput.value = '';
+                                    empresaInput.value = '';
+                                    setReporterFieldsReadonly(false);
+                                }
+                            })
+                            .withFailureHandler(function(error) {
+                                loadingMessage.style.display = 'none';
+                                console.error('Error al ejecutar el script:', error.message);
+                                alert('Hubo un error al buscar el DNI. Rellena los datos manualmente.');
+                                setReporterFieldsReadonly(false);
+                            })
+                            .buscarDNI(dni);
+                    }, 500);
+                } else {
+                    alert("🔴 Estás sin conexión. Por favor, rellena tus datos manualmente.");
+                    setReporterFieldsReadonly(false);
+                }
+            } else {
+                setReporterFieldsReadonly(false);
+            }
+        });
+
+        // NUEVO: Manejar el clic en el botón de cámara
+        cameraButton.addEventListener('click', () => {
+            fotoInput.click();
+        });
+
+        fotoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                fileNameSpan.textContent = file.name; // Mostrar el nombre del archivo
+                const reader = new FileReader();
+                reader.onloadend = function() {
+                    const base64data = reader.result;
+                    imagePreview.src = base64data;
+                    imagePreview.style.display = 'block';
+                    fotoDataInput.value = base64data;
+                };
+                reader.readAsDataURL(file);
+            } else {
+                fileNameSpan.textContent = 'No se ha seleccionado archivo.';
+                imagePreview.style.display = 'none';
+                fotoDataInput.value = '';
+            }
+        });
+
+        actoCondicionSelect.addEventListener('change', (event) => {
+            const selectedValue = event.target.value;
+            actoInseguroDiv.style.display = 'none';
+            condicionInseguraDiv.style.display = 'none';
+            codigoDiv.style.display = 'none';
+            codigoInput.value = '';
+            
+            actoInseguroSelect.removeAttribute('required');
+            condicionInseguraSelect.removeAttribute('required');
+            
+            if (selectedValue === 'Acto Subestandar') {
+                actoInseguroDiv.style.display = 'block';
+                actoInseguroSelect.setAttribute('required', 'required');
+            } else if (selectedValue === 'Condicion Subestandar') {
+                condicionInseguraDiv.style.display = 'block';
+                condicionInseguraSelect.setAttribute('required', 'required');
+            }
+        });
+
+        actoInseguroSelect.addEventListener('change', (event) => {
+            const selectedValue = event.target.value;
+            const codigo = extraerCodigo(selectedValue);
+            if (codigo) {
+                codigoDiv.style.display = 'block';
+                codigoInput.value = codigo;
+            } else {
+                codigoDiv.style.display = 'none';
+                codigoInput.value = '';
+            }
+        });
+
+        condicionInseguraSelect.addEventListener('change', (event) => {
+            const selectedValue = event.target.value;
+            const codigo = extraerCodigo(selectedValue);
+            if (codigo) {
+                codigoDiv.style.display = 'block';
+                codigoInput.value = codigo;
+            } else {
+                codigoDiv.style.display = 'none';
+                codigoInput.value = '';
+            }
+        });
+
+        riesgoOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                riesgoOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                nivelRiesgoInput.value = option.dataset.value;
+                
+                plazoDiv.style.display = 'block';
+                if (option.dataset.value === 'Alto') {
+                    plazoInput.value = '0-24 HORAS';
+                } else if (option.dataset.value === 'Medio') {
+                    plazoInput.value = '72 HORAS';
+                } else if (option.dataset.value === 'Bajo') {
+                    plazoInput.value = '1 MES';
+                }
+            });
+        });
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const data = {};
+            const elements = e.target.elements;
+            for (let i = 0; i < elements.length; i++) {
+                if (elements[i].name) {
+                    data[elements[i].name] = elements[i].value;
+                }
+            }
+
+            document.getElementById('success-message').style.display = 'none';
+            document.getElementById('fail-message').style.display = 'none';
+            submitButton.value = 'Enviando...';
+            submitButton.disabled = true;
+
+            if (navigator.onLine) {
+                if (data.foto_data) {
+                    google.script.run
+                        .withSuccessHandler(function(fileUrl) {
+                            data.foto_url = fileUrl;
+                            delete data.foto_data;
+                            google.script.run
+                                .withSuccessHandler(function(response) {
+                                    if (response === 'Reporte guardado con éxito.') {
+                                        document.getElementById('success-message').style.display = 'block';
+                                        form.reset();
+                                        imagePreview.style.display = 'none';
+                                        fotoDataInput.value = '';
+                                        fileNameSpan.textContent = 'No se ha seleccionado archivo.';
+                                        setReporterFieldsReadonly(true);
+                                        setSupervisorFieldsReadonly(true);
+                                    } else {
+                                        document.getElementById('fail-message').style.display = 'block';
+                                    }
+                                    submitButton.value = 'Enviar Reporte';
+                                    submitButton.disabled = false;
+                                })
+                                .withFailureHandler(function(error) {
+                                    console.error('Error al enviar el reporte:', error.message);
+                                    document.getElementById('fail-message').style.display = 'block';
+                                    submitButton.value = 'Enviar Reporte';
+                                    submitButton.disabled = false;
+                                })
+                                .guardarReporte(data);
+                        })
+                        .withFailureHandler(function(error) {
+                            console.error('Error al subir la foto en línea:', error.message);
+                            document.getElementById('fail-message').style.display = 'block';
+                            submitButton.value = 'Enviar Reporte';
+                            submitButton.disabled = false;
+                        })
+                        .uploadPhotoToDrive(data.foto_data, `reporte_${Date.now()}.jpg`);
+                } else {
+                    google.script.run
+                        .withSuccessHandler(function(response) {
+                            if (response === 'Reporte guardado con éxito.') {
+                                document.getElementById('success-message').style.display = 'block';
+                                form.reset();
+                                imagePreview.style.display = 'none';
+                                fotoDataInput.value = '';
+                                fileNameSpan.textContent = 'No se ha seleccionado archivo.';
+                                setReporterFieldsReadonly(true);
+                                setSupervisorFieldsReadonly(true);
+                            } else {
+                                document.getElementById('fail-message').style.display = 'block';
+                            }
+                            submitButton.value = 'Enviar Reporte';
+                            submitButton.disabled = false;
+                        })
+                        .withFailureHandler(function(error) {
+                            console.error('Error al enviar el reporte:', error.message);
+                            document.getElementById('fail-message').style.display = 'block';
+                            submitButton.value = 'Enviar Reporte';
+                            submitButton.disabled = false;
+                        })
+                        .guardarReporte(data);
+                }
+            } else {
+                saveReportOffline(data);
+                document.getElementById('success-message').style.display = 'block';
+                alert('🔴 Sin conexión. El reporte ha sido guardado localmente y se enviará automáticamente cuando recuperes la conexión.');
+                form.reset();
+                imagePreview.style.display = 'none';
+                fotoDataInput.value = '';
+                fileNameSpan.textContent = 'No se ha seleccionado archivo.';
+                setReporterFieldsReadonly(false);
+                setSupervisorFieldsReadonly(false);
+                submitButton.value = 'Enviar Reporte';
+                submitButton.disabled = false;
+            }
+        });
+        
+        window.addEventListener('online', handleConnectionStatus);
+        window.addEventListener('offline', handleConnectionStatus);
+
+    </script>
+</body>
+</html>
