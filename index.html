@@ -599,15 +599,17 @@
         let dniTimer;
         
         const STORAGE_KEY = 'pendingReports';
-
+        
+        // Función para establecer si los campos del reportero son de solo lectura
         function setReporterFieldsReadonly(isReadonly) {
-            // El campo DNI siempre se controla por separado para permitir la entrada inicial
+            // El DNI se maneja por separado en el evento de 'input'
             nombreInput.readOnly = isReadonly;
             areaInput.readOnly = isReadonly;
             cargoInput.readOnly = isReadonly;
             empresaInput.readOnly = isReadonly;
         }
 
+        // Función para establecer si los campos del supervisor son de solo lectura
         function setSupervisorFieldsReadonly(isReadonly) {
             supervisorCargoInput.readOnly = isReadonly;
             supervisorEmpresaInput.readOnly = isReadonly;
@@ -617,20 +619,19 @@
         function handleConnectionStatus() {
             if (navigator.onLine) {
                 offlineMessage.style.display = 'none';
-                
-                // --- ONLINE: Buscar es la prioridad ---
-                // 1. Campos de Reportero: Bloquear todos EXCEPTO DNI.
+                // Si está online, permite ingresar DNI y bloquea el resto
                 setReporterFieldsReadonly(true);
-                dniInput.readOnly = false; // Solo DNI es editable para la búsqueda
+                dniInput.readOnly = false; // Solo el DNI siempre es editable para la búsqueda
                 
-                // 2. Campos de Supervisor: Bloquear, se llenarán por datalist/búsqueda.
+                // Si está online, los detalles del supervisor se cargan solos
                 setSupervisorFieldsReadonly(true); 
                 supervisorNombreInput.setAttribute('list', 'supervisores_list');
-                
-                // 3. Cargar la lista de supervisores
+
+                // 1. Cargar la lista de supervisores para el datalist
                 google.script.run
                     .withSuccessHandler(function(supervisores) {
                         supervisoresList.innerHTML = '';
+                        // Se cargan todos los supervisores, aunque la datalist puede limitar la visualización en algunos navegadores
                         supervisores.forEach(supervisor => {
                             const option = document.createElement('option');
                             option.value = supervisor;
@@ -638,21 +639,16 @@
                         });
                     })
                     .obtenerSupervisores();
-                    
-                // 4. Sincronizar reportes pendientes
-                syncReports();
                 
+                // 2. Sincronizar reportes pendientes
+                syncReports();
             } else {
                 offlineMessage.style.display = 'block';
-                
-                // --- OFFLINE: Todo es manual ---
-                // Desbloquear todos los campos de datos (reportero y supervisor) para el llenado manual
-                setReporterFieldsReadonly(false); 
-                dniInput.readOnly = false; // Asegurar que DNI también es editable
-                setSupervisorFieldsReadonly(false); 
-                
-                // Quitar el datalist para evitar confusiones si no hay datos locales
-                supervisorNombreInput.removeAttribute('list'); 
+                // Si está offline, todos los campos de datos (reportero y supervisor) son editables
+                setReporterFieldsReadonly(false);
+                dniInput.readOnly = false; // El DNI se puede llenar a mano
+                setSupervisorFieldsReadonly(false);
+                supervisorNombreInput.removeAttribute('list'); // Quitar la lista ya que no se puede cargar
                 supervisoresList.innerHTML = '';
             }
         }
@@ -676,12 +672,11 @@
 
         function syncReports() {
             const reports = getPendingReports();
-            
             if (reports.length > 0) {
                 syncMessage.textContent = `🔄 Sincronizando ${reports.length} reporte(s) pendiente(s)...`;
                 syncMessage.style.display = 'block';
                 const firstReport = reports[0];
-                
+
                 const uploadAndSave = (reporte) => {
                     if (reporte.foto_data) {
                         // Subir foto primero
@@ -702,7 +697,7 @@
                         saveReportToSheet(reporte);
                     }
                 };
-                
+
                 const saveReportToSheet = (reporte) => {
                     // Guardar en la hoja de cálculo
                     google.script.run
@@ -721,12 +716,14 @@
                 };
                 
                 uploadAndSave(firstReport);
+
             } else {
                 syncMessage.style.display = 'none';
             }
         }
 
         // --- LÓGICA DE UTILIDADES ---
+
         // Función para extraer el código (Ej: "A-1" de "A-1: Descripcion")
         function extraerCodigo(valor) {
             if (valor && valor.includes(':')) {
@@ -737,19 +734,30 @@
 
         // --- MANEJO DE EVENTOS ---
 
-        // Inicialización y manejo de estado de conexión
-        window.addEventListener('load', handleConnectionStatus);
+        // Inicialización al cargar la página
+        window.addEventListener('load', () => {
+            handleConnectionStatus();
+            // Asegurar que solo el DNI esté editable al inicio si hay conexión
+            if (navigator.onLine) {
+                setReporterFieldsReadonly(true);
+                dniInput.readOnly = false;
+            }
+        });
+
+        // Eventos de conexión
         window.addEventListener('online', handleConnectionStatus);
         window.addEventListener('offline', handleConnectionStatus);
 
         // Búsqueda de Supervisor
         supervisorNombreInput.addEventListener('input', () => {
-            // Si no hay conexión, se garantiza la edición manual en handleConnectionStatus.
             if (!navigator.onLine) {
-                return; 
+                // Si no hay conexión, permite la edición manual
+                supervisorCargoInput.value = '';
+                supervisorEmpresaInput.value = '';
+                setSupervisorFieldsReadonly(false);
+                return;
             }
-            
-            // Si hay conexión, procede con la búsqueda y bloqueo temporal
+
             setSupervisorFieldsReadonly(true); // Bloquear mientras busca
             const nombre = supervisorNombreInput.value;
             
@@ -760,28 +768,24 @@
                         if (data && data.cargo) {
                             supervisorCargoInput.value = data.cargo;
                             supervisorEmpresaInput.value = data.empresa;
-                            setSupervisorFieldsReadonly(true); // Bloquear si se encuentra
+                            setSupervisorFieldsReadonly(true);
                         } else {
                             // Si no se encuentra, permite la edición manual
-                            alert("Supervisor no encontrado en la base de datos. Por favor, ingresa los datos de supervisor manualmente.");
                             supervisorCargoInput.value = '';
                             supervisorEmpresaInput.value = '';
-                            setSupervisorFieldsReadonly(false); // Permitir manual para supervisor
+                            setSupervisorFieldsReadonly(false);
                         }
                     })
                     .withFailureHandler(function(error) {
                         console.error("Error buscando supervisor:", error);
                         supervisorCargoInput.value = '';
                         supervisorEmpresaInput.value = '';
-                        // Si falla la conexión durante la búsqueda, permitir manual
-                        setSupervisorFieldsReadonly(false); 
+                        setSupervisorFieldsReadonly(false);
                     })
                     .buscarSupervisor(nombre);
             } else {
                 supervisorCargoInput.value = '';
                 supervisorEmpresaInput.value = '';
-                // Si el campo está vacío, lo volvemos a bloquear para forzar la búsqueda si el usuario escribe de nuevo
-                setSupervisorFieldsReadonly(true); 
             }
         });
 
@@ -789,11 +793,13 @@
         dniInput.addEventListener('input', () => {
             clearTimeout(dniTimer);
             loadingMessage.style.display = 'none';
+
             const dni = dniInput.value;
 
-            // Al empezar a escribir, desbloqueamos todos los campos del reportero
-            setReporterFieldsReadonly(false); 
-            dniInput.readOnly = false; 
+            // Permite ingresar el DNI manualmente si no está bloqueado
+            if (!dniInput.readOnly) {
+                setReporterFieldsReadonly(false);
+            }
 
             if (dni.length === 8) {
                 if (navigator.onLine) {
@@ -807,38 +813,33 @@
                                     areaInput.value = dataEncontrada.area;
                                     cargoInput.value = dataEncontrada.cargo;
                                     empresaInput.value = dataEncontrada.empresa;
-                                    
-                                    // Bloquear campos una vez encontrado el DNI
-                                    setReporterFieldsReadonly(true); 
-                                    dniInput.readOnly = true; 
+                                    setReporterFieldsReadonly(true);
+                                    dniInput.readOnly = true; // Bloquear DNI una vez encontrado
                                 } else {
                                     alert("DNI no encontrado. Por favor, ingresa tus datos manualmente.");
-                                    // Si no se encuentra, limpiar y asegurar que sean editables.
                                     nombreInput.value = '';
                                     areaInput.value = '';
                                     cargoInput.value = '';
                                     empresaInput.value = '';
-                                    setReporterFieldsReadonly(false); 
-                                    dniInput.readOnly = false; 
+                                    setReporterFieldsReadonly(false);
+                                    dniInput.readOnly = false; // Permitir edición manual
                                 }
                             })
                             .withFailureHandler(function(error) {
                                 loadingMessage.style.display = 'none';
                                 console.error('Error al ejecutar el script:', error.message);
                                 alert('Hubo un error al buscar el DNI. Rellena los datos manualmente.');
-                                // Si falla el script, permitir edición manual.
                                 setReporterFieldsReadonly(false);
-                                dniInput.readOnly = false; 
+                                dniInput.readOnly = false; // Permitir edición manual
                             })
                             .buscarDNI(dni);
                     }, 500);
                 } else {
-                    // OFFLINE: Se garantiza el llenado manual
                     alert("🔴 Estás sin conexión. Por favor, rellena tus datos manualmente.");
-                    // Los campos ya están desbloqueados por la lógica inicial del listener y handleConnectionStatus.
+                    setReporterFieldsReadonly(false);
                 }
             } else {
-                // Resetear si el DNI es incompleto y dejar los campos editables
+                // Resetear si se borra el DNI
                 nombreInput.value = '';
                 areaInput.value = '';
                 cargoInput.value = '';
@@ -846,7 +847,7 @@
                 setReporterFieldsReadonly(false);
             }
         });
-        
+
         // Botón de Cámara/Archivo
         cameraButton.addEventListener('click', () => {
             fotoInput.click();
@@ -874,7 +875,6 @@
         // Mostrar/Ocultar Acto/Condición
         actoCondicionSelect.addEventListener('change', (event) => {
             const selectedValue = event.target.value;
-            
             // Resetear todos los campos
             actoInseguroDiv.style.display = 'none';
             condicionInseguraDiv.style.display = 'none';
@@ -894,96 +894,97 @@
             }
         });
 
-        // Generar Código en base a la selección de Acto
+        // Llenar Código para Acto Inseguro
         actoInseguroSelect.addEventListener('change', (event) => {
             const selectedValue = event.target.value;
-            codigoInput.value = extraerCodigo(selectedValue);
-            codigoDiv.style.display = selectedValue ? 'block' : 'none';
+            const codigo = extraerCodigo(selectedValue);
+            if (codigo) {
+                codigoDiv.style.display = 'block';
+                codigoInput.value = codigo;
+            } else {
+                codigoDiv.style.display = 'none';
+                codigoInput.value = '';
+            }
         });
 
-        // Generar Código en base a la selección de Condición
+        // Llenar Código para Condición Insegura
         condicionInseguraSelect.addEventListener('change', (event) => {
             const selectedValue = event.target.value;
-            codigoInput.value = extraerCodigo(selectedValue);
-            codigoDiv.style.display = selectedValue ? 'block' : 'none';
+            const codigo = extraerCodigo(selectedValue);
+            if (codigo) {
+                codigoDiv.style.display = 'block';
+                codigoInput.value = codigo;
+            } else {
+                codigoDiv.style.display = 'none';
+                codigoInput.value = '';
+            }
         });
 
-        // Selección de Nivel de Riesgo
+        // --- MANEJO DE SELECCIÓN DE RIESGO Y PLAZO DE ACCIÓN (Corregido) ---
         riesgoOptions.forEach(option => {
-            option.addEventListener('click', function() {
+            option.addEventListener('click', () => {
+                // 1. Remover la clase 'selected' de todos
                 riesgoOptions.forEach(opt => opt.classList.remove('selected'));
-                this.classList.add('selected');
-                const riesgoValue = this.getAttribute('data-value');
-                nivelRiesgoInput.value = riesgoValue;
                 
-                // Definir plazo de acción
-                if (riesgoValue === 'Alto') {
-                    plazoInput.value = 'Inmediata (Detener el trabajo)';
-                    plazoDiv.style.display = 'block';
-                } else if (riesgoValue === 'Medio') {
-                    plazoInput.value = 'Dentro de 24 horas';
-                    plazoDiv.style.display = 'block';
-                } else if (riesgoValue === 'Bajo') {
-                    plazoInput.value = 'Dentro de 7 días';
-                    plazoDiv.style.display = 'block';
-                } else {
-                    plazoInput.value = '';
-                    plazoDiv.style.display = 'none';
+                // 2. Agregar la clase 'selected' al seleccionado
+                option.classList.add('selected');
+                
+                const selectedValue = option.getAttribute('data-value');
+                nivelRiesgoInput.value = selectedValue;
+                
+                plazoDiv.style.display = 'block';
+                
+                let plazoText = '';
+                if (selectedValue === 'Alto') {
+                    plazoText = '0 - 24 Horas'; // PLAZO ACTUALIZADO
+                } else if (selectedValue === 'Medio') {
+                    plazoText = '0 - 72 Horas'; // PLAZO ACTUALIZADO
+                } else if (selectedValue === 'Bajo') {
+                    plazoText = '1 Mes'; // PLAZO ACTUALIZADO
                 }
+                plazoInput.value = plazoText;
             });
         });
 
         // Manejo del envío del formulario
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Ocultar mensajes de estado anteriores
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
             document.getElementById('success-message').style.display = 'none';
             document.getElementById('fail-message').style.display = 'none';
 
-            // Validar que se haya seleccionado un nivel de riesgo
-            if (!nivelRiesgoInput.value) {
-                alert('Por favor, selecciona un Nivel de Riesgo.');
-                return;
-            }
-
-            // Deshabilitar botón y cambiar texto
             submitButton.value = 'Enviando...';
             submitButton.disabled = true;
-            
-            // Recolectar datos del formulario
-            const data = {};
+
             const formData = new FormData(form);
+            const data = {};
             formData.forEach((value, key) => {
                 data[key] = value;
             });
             
-            // Asegurar que solo se envíe un tipo de acto/condición
-            if (data.acto_condicion === 'Acto Subestandar') {
-                data.condicion_insegura = '';
-            } else if (data.acto_condicion === 'Condicion Subestandar') {
-                data.acto_inseguro = '';
+            // Asegurar que el DNI no se vaya a la hoja si no se llenó
+            if (!data.dni) {
+                delete data.dni;
             }
-
-            // Si hay conexión, intentar enviar. Si no, guardar offline.
+            
+            // Si está online, intenta enviar y subir la foto
             if (navigator.onLine) {
                 if (data.foto_data) {
-                    // 1. Subir la foto primero
+                    // Si hay foto, primero se sube la foto a Drive
                     google.script.run
                         .withSuccessHandler(function(fileUrl) {
                             data.foto_url = fileUrl;
                             delete data.foto_data;
-                            // 2. Guardar el reporte en la hoja
+                            // Luego se guarda el reporte con la URL
                             google.script.run
                                 .withSuccessHandler(function(response) {
                                     document.getElementById('success-message').style.display = 'block';
-                                    // Resetear el formulario para un nuevo reporte
                                     form.reset();
                                     imagePreview.style.display = 'none';
                                     fotoDataInput.value = '';
                                     fileNameSpan.textContent = 'No se ha seleccionado archivo.';
-                                    setReporterFieldsReadonly(true); // Bloquear para el siguiente DNI
-                                    dniInput.readOnly = false; // Solo DNI editable
+                                    // Restaurar el estado de inicio (bloqueado para buscar)
+                                    setReporterFieldsReadonly(true);
+                                    dniInput.readOnly = false;
                                     setSupervisorFieldsReadonly(true);
                                     submitButton.value = 'Enviar Reporte';
                                     submitButton.disabled = false;
@@ -998,24 +999,25 @@
                         })
                         .withFailureHandler(function(error) {
                             console.error('Error al subir la foto:', error.message);
-                            document.getElementById('fail-message').textContent = '❌ Error al subir la foto. Intenta de nuevo sin foto o contacta a soporte.';
+                            document.getElementById('fail-message').textContent = '❌ Error al subir la foto. Intenta sin foto o contacta a soporte.';
                             document.getElementById('fail-message').style.display = 'block';
                             submitButton.value = 'Enviar Reporte';
                             submitButton.disabled = false;
                         })
                         .uploadPhotoToDrive(data.foto_data, `reporte_${Date.now()}.jpg`);
+
                 } else {
-                    // Sin foto, guardar directamente
+                    // Si no hay foto, solo se envía el reporte
                     google.script.run
                         .withSuccessHandler(function(response) {
                             document.getElementById('success-message').style.display = 'block';
-                            // Resetear el formulario para un nuevo reporte
                             form.reset();
                             imagePreview.style.display = 'none';
                             fotoDataInput.value = '';
                             fileNameSpan.textContent = 'No se ha seleccionado archivo.';
-                            setReporterFieldsReadonly(true); // Bloquear para el siguiente DNI
-                            dniInput.readOnly = false; // Solo DNI editable
+                            // Restaurar el estado de inicio (bloqueado para buscar)
+                            setReporterFieldsReadonly(true);
+                            dniInput.readOnly = false;
                             setSupervisorFieldsReadonly(true);
                             submitButton.value = 'Enviar Reporte';
                             submitButton.disabled = false;
@@ -1039,11 +1041,10 @@
                 imagePreview.style.display = 'none';
                 fotoDataInput.value = '';
                 fileNameSpan.textContent = 'No se ha seleccionado archivo.';
-                
-                // Desbloquear todos los campos para el siguiente reporte manual
+                // Restaurar el estado de llenado manual para el siguiente reporte offline
                 setReporterFieldsReadonly(false);
+                dniInput.readOnly = false;
                 setSupervisorFieldsReadonly(false);
-                
                 submitButton.value = 'Enviar Reporte';
                 submitButton.disabled = false;
             }
